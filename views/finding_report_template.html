@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Azure security assessment guideline v{{ date }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; font-size: 14px; }
+        h1, h2 { color: #a60300; font-family: Verdana, sans-serif; }
+        .finding { margin-bottom: 30px; }
+        .section-title { font-weight: bold; margin-top: 10px; }
+        ul { list-style-type: none; padding: 0; }
+        li { margin: 5px 0; }
+        footer { margin-top: 40px; font-size: 12px; text-align: center; }
+        hr { margin: 15px 0; color: #a60300; }
+        .severity {
+            padding: 2px 6px;
+            font-weight: bold;
+            border-radius: 3px;
+        }
+        .severity.High { background: #ffdddd; color: red; }
+        .severity.Medium { background: #fff3cd; color: #856404; }
+        .severity.Low { background: #ddffdd; color: green; }
+    </style>
+</head>
+<body>
+    <h1>Azure security assessment guideline v{{ date }}</h1>
+    <p><b>Compiled at</b> {{ date }}</p>
+    <p><b>Compiled by</b> Krystian Bajno</p>
+
+    {% for finding in findings %}
+        <div class="finding">
+            <h2>       
+                {{ finding.name | md_link_text }}
+       
+                {% if finding.severity %}
+                    <span class="severity {{ finding.severity }}">{{ finding.severity }}</span>
+                {% endif %}
+            </h2>
+            <hr />
+            <p>
+                <span class="section-title">ID:</span> {{ finding.id }} <br />
+                <span class="section-title">Category:</span> {{ finding.category }}<br />
+                <span class="section-title">Subcategory:</span> {{ finding.subcategory }}<br />
+                <span class="section-title">Source:</span> {{ finding.source }}<br />
+                <span class="section-title">Version:</span> {{ finding.version }}<br />
+            </p>
+
+            {% if finding.criticality %}
+                <p>
+                    <span class="section-title">Criticality:</span> {{ finding.criticality }}
+                </p>
+            {% endif %}
+
+            {% if finding.rationale %}
+                <p>
+                    <span class="section-title">Rationale:</span>
+                    <br />
+                    {{ finding.rationale }}
+                </p>
+            {% endif %}
+
+            {% if finding.notes and finding.notes|length > 0 %}
+                <p>
+                    <span class="section-title">Notes:</span>
+                </p>
+                <ul>
+                    {% for note in finding.notes %}
+                        <li>{{ note }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if finding.last_modified %}
+                <p>
+                    <span class="section-title">Last modified:</span> {{ finding.last_modified }}
+                </p>
+            {% endif %}
+
+            {% if finding.description %}
+                <p>
+                    <span class="section-title">Description:</span>
+                    <br />
+                    {{ finding.description }}
+                </p>
+            {% endif %}
+
+            {% if finding.effects %}
+                <p>
+                    <span class="section-title">Effects:</span>
+                </p>
+                <ul>
+                    {% for effect in finding.effects %}
+                        <li>{{ effect }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if finding.mitre and finding.mitre|length > 0 %}
+                <p>
+                    <span class="section-title">MITRE ATT&amp;CK TTPs:</span>
+                </p>
+                <ul>
+                    {% for ttp in finding.mitre %}
+                        <li>{{ ttp }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if finding.remediation %}
+                <p>
+                    <span class="section-title">Remediation:</span>
+                    <br />
+                    {{ finding.remediation }}
+                </p>
+            {% endif %}
+
+            {% if finding.product %}
+                <p>
+                    <span class="section-title">Product/Licenses:</span>
+                    <br />
+                    {{ finding.product }}
+                </p>
+            {% endif %}
+
+            <span class="section-title">Reference:</span>
+            <a href="{{ finding.reference | extract_url_if_markdown }}" target="_blank">
+                {{ finding.reference }}
+            </a><br />
+        </div>
+    {% endfor %}
+    
+    <footer>
+        Guideline compilation by Krystian Bajno
+    </footer>
+</body>
+</html>
